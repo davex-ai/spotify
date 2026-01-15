@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import LikedList from '../components/LikedList'
 
 
 const Liked = () => {
@@ -63,7 +64,7 @@ const Liked = () => {
             </Pressable>
           </View>
         </Pressable>
-        <FlatList data={likedsongs}/>
+        <FlatList data={likedsongs} renderItem={({item}) => {<LikedList item={item} />}} showsVeritcalScrollIndicator={false}/>
       </ScrollView>
     </LinearGradient>
   )
