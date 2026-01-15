@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from "axios";
+import { FlatList } from 'react-native/types_generated/index';
 
 
 
@@ -65,6 +66,16 @@ const Home = () => {
     useEffect(() => {
     getRecentSongs()
   },[])
+  const renderItem = ({item}) => {
+    return (
+      <Pressable style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', marginHorizontal: 10, marginVertical: 8, backgroundColor: '#202020', borderRadius: 4, elevation: 3}}>
+        <Image style={{height: 55, width: 55}} source={{uri: item.track.album.images[0].url}}/>
+        <View style={{flex: 1, marginHorizontal: 8, justifyContent: 'center'}}>
+        <Text numberOfLines={2} style={{fontSize: 13, fontWeight: 'bold', color: 'white'}}>{item.track.name}</Text>
+        </View>
+      </Pressable>
+    )
+  }
   
   return (
     <LinearGradient colors={['#040306', '#131624']} style={{ flex: 1 }}>
@@ -97,6 +108,7 @@ const Home = () => {
             </View>
           </View>
         </View>
+        <FlatList data={recentTrack} renderItem={renderItem} numColumns={2} columnWrapperStyle={{justifyContent: 'space-between'}}/>
       </ScrollView>
     </LinearGradient>
   )
