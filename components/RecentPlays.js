@@ -11,4 +11,3 @@ const RecentPlays = ({item}) => {
 }
 
 export default RecentPlays
-// style={{}}

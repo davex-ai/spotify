@@ -1,12 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-// import { LinearGradient } from 'expo-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient'
 import { Entypo,  MaterialIcons, AntDesign } from '@expo/vector-icons'
-// import {  } from '@expo/vector-icons'
+import {  } from '@expo/vector-icons'
 import * as AppAuth from 'expo-app-auth'
 import { useNavigation } from '@react-navigation/native'
-// import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Login = () => {
     const navigation = useNavigation()

@@ -1,16 +1,13 @@
 import { StyleSheet, Text, View, ScrollView, Image, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
-// import { LinearGradient } from 'expo-linear-gradient'
-// import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from "axios";
 import { FlatList } from 'react-native/types_generated/index';
 import ArtistCard from '../components/ArtistCard';
 import RecentPlays from '../components/RecentPlays';
-
-
-
 
 const Home = () => {
   const [userProfile, setUserProfile] = useState()

@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Login from "./screens/Login";
+import Liked from "./screens/Liked";
 const Tab = createBottomTabNavigator()
 
 function BottomTabs(){
@@ -25,6 +26,7 @@ function Navigation(){
             <Stack.Navigator>
                 <Stack.Screen name="login" component={Login} options={{headerShown: false}}/>
                 <Stack.Screen name="Main" component={BottomTabs} options={{headerShown: false}}/>
+                <Stack.Screen name="Liked" component={Liked} options={{headerShown: false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )
