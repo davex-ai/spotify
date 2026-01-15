@@ -1,18 +1,20 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, FlatList, Image, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from "axios";
-import { FlatList } from 'react-native/types_generated/index';
 import ArtistCard from '../components/ArtistCard';
 import RecentPlays from '../components/RecentPlays';
+import { useNavigation } from '@react-navigation/native'
 
 const Home = () => {
   const [userProfile, setUserProfile] = useState()
   const [recentTrack, setRecentTrack] = useState([])
   const [topArtist, setTopArtist] = useState([])
+  const navigation = useNavigation()
+
   const getProfile = async () => {
     const accessToken = await AsyncStorage.getItem('token')
     try {
@@ -46,6 +48,7 @@ const Home = () => {
   },[])
 
   console.log(userProfile);
+
   const getRecentSongs = async ( ) => {
       const accessToken = await AsyncStorage.getItem('token')
       try {
@@ -63,9 +66,11 @@ const Home = () => {
         
       }  
     }
+
     useEffect(() => {
     getRecentSongs()
   },[])
+
   const renderItem = ({item}) => {
     return (
       <Pressable style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', marginHorizontal: 10, marginVertical: 8, backgroundColor: '#202020', borderRadius: 4, elevation: 3}}>
@@ -76,6 +81,7 @@ const Home = () => {
       </Pressable>
     )
   }
+
   useEffect(() => {
     const getTopItems = async () => {
       try {
@@ -115,7 +121,7 @@ const Home = () => {
         </View>
         <View style={{height: 10}}/>
         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-          <Pressable style={{marginBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1, marginHorizontal: 10, marginVertical: 8, backgroundColor: '#202020', borderRadius: 4, elevation: 3}}>
+          <Pressable onPress={() => navigation.navigate("Liked")} style={{marginBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1, marginHorizontal: 10, marginVertical: 8, backgroundColor: '#202020', borderRadius: 4, elevation: 3}}>
             <LinearGradient colors={['#33006F', '#FFFFFF']}>
               <Pressable style={{width: 55, justifyContent: 'center', alignItems: 'center'}}>
                 <AntDesign name="heart" size={24} color="white" />
