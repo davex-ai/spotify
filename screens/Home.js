@@ -6,6 +6,7 @@ import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from "axios";
 import { FlatList } from 'react-native/types_generated/index';
+import ArtistCard from '../components/ArtistCard';
 
 
 
@@ -13,6 +14,7 @@ import { FlatList } from 'react-native/types_generated/index';
 const Home = () => {
   const [userProfile, setUserProfile] = useState()
   const [recentTrack, setRecentTrack] = useState([])
+  const [topArtist, setTopArtist] = useState([])
   const getProfile = async () => {
     const accessToken = await AsyncStorage.getItem('token')
     try {
@@ -62,7 +64,7 @@ const Home = () => {
         console.log(err.message);
         
       }  
-  }
+    }
     useEffect(() => {
     getRecentSongs()
   },[])
@@ -76,6 +78,28 @@ const Home = () => {
       </Pressable>
     )
   }
+  useEffect(() => {
+    const getTopItems = async () => {
+      try {
+        const accessToken = await AsyncStorage.getItem('token')
+        if(!accessToken){
+          console.log("Access token no present");
+          return
+        }
+        const type = "artists"
+        const res = await axios.get(`https://api.spotify.com/v1/me/top/${type}`,{
+          headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+        })
+        setTopArtist(res.data.items)
+      } catch (error) {
+        console.log(err.message);       
+      }
+      
+    }
+  getTopItems()
+},[])
   
   return (
     <LinearGradient colors={['#040306', '#131624']} style={{ flex: 1 }}>
@@ -109,6 +133,12 @@ const Home = () => {
           </View>
         </View>
         <FlatList data={recentTrack} renderItem={renderItem} numColumns={2} columnWrapperStyle={{justifyContent: 'space-between'}}/>
+        <Text style={{color: "white", fontSize: 19, fontWeight: 'bold', marginHorizontal: 10, marginTop: 10}}>Top Artists</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {topArtist.map((item, index) =>{
+            <ArtistCard item={item} key={index}/>
+        })}
+        </ScrollView>
       </ScrollView>
     </LinearGradient>
   )
