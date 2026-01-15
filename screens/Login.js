@@ -2,8 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Entypo,  MaterialIcons, AntDesign } from '@expo/vector-icons'
-// import {  } from '@expo/vector-icons'
+import { Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons'
 import * as AppAuth from 'expo-app-auth'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -11,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 const Login = () => {
     const navigation = useNavigation()
     useEffect(() => {
-        const tokenValidity = async ()  => {
+        const tokenValidity = async () => {
             const accessToken = await AsyncStorage.getItem('token')
             const expDate = await AsyncStorage.getItem('expirationDate')
             console.log("acess token", accessToken);
@@ -19,16 +18,16 @@ const Login = () => {
 
             if (accessToken && expDate) {
                 const currTime = Date.now()
-                if (currTime < parseInt(expDate)){
+                if (currTime < parseInt(expDate)) {
                     navigation.replace('Main')
-                } else{
+                } else {
                     AsyncStorage.removeItem('token')
                     AsyncStorage.removeItem('expirationDate')
                 }
-            }              
+            }
         }
         tokenValidity()
-    },[])
+    }, [])
     async function authenticate() {
         const config = {
             issue: "https://accounts.spotify.com",
