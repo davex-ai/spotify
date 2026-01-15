@@ -6,7 +6,7 @@ import { Entypo,  MaterialIcons, AntDesign } from '@expo/vector-icons'
 // import {  } from '@expo/vector-icons'
 import * as AppAuth from 'expo-app-auth'
 import { useNavigation } from '@react-navigation/native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+// import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Login = () => {
     const navigation = useNavigation()
@@ -75,7 +75,6 @@ const Login = () => {
                     <Entypo name='facebook' size={24} color='blue' />
                     <Text style={{ fontWeight: '500', color: 'white', textAlign: 'center', flex: 1 }}>Sign in with Facebook</Text>
                 </Pressable>
-
             </SafeAreaView>
         </LinearGradient>
 

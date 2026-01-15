@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react'
 // import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from "axios";
 
 
 
 
 const Home = () => {
   const [userProfile, setUserProfile] = useState()
+  const [recentTrack, setRecentTrack] = useState([])
   const getProfile = async () => {
     const accessToken = await AsyncStorage.getItem('token')
     try {
@@ -43,6 +45,26 @@ const Home = () => {
   },[])
 
   console.log(userProfile);
+  const getRecentSongs = async ( ) => {
+      const accessToken = await AsyncStorage.getItem('token')
+      try {
+        const res = await axios({
+          method: "GET",
+          url: "https://api.spotify.com/v1/me/player/recently-played?limit=6",
+          headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+        })
+        const tracks = res.data.items
+        setRecentTrack(tracks)
+      } catch (err) {
+        console.log(err.message);
+        
+      }  
+  }
+    useEffect(() => {
+    getRecentSongs()
+  },[])
   
   return (
     <LinearGradient colors={['#040306', '#131624']} style={{ flex: 1 }}>
@@ -59,7 +81,7 @@ const Home = () => {
           <Pressable  style={{backgroundColor: '#282828', padding: 10, borderRadius: 30}}> <Text style={{fontSize: 15, color: 'white'}}>Podcasts & Shows</Text></Pressable>
         </View>
         <View style={{height: 10}}/>
-        <View>
+        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
           <Pressable style={{marginBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1, marginHorizontal: 10, marginVertical: 8, backgroundColor: '#202020', borderRadius: 4, elevation: 3}}>
             <LinearGradient colors={['#33006F', '#FFFFFF']}>
               <Pressable style={{width: 55, justifyContent: 'center', alignItems: 'center'}}>
@@ -68,7 +90,12 @@ const Home = () => {
             </LinearGradient>
             <Text style={{color: 'white', fontSize: 13, fontWeight: 'bold'}}>Liked Songs</Text>
           </Pressable>
-          <View></View>
+          <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1, marginHorizontal: 10, marginVertical: 8, backgroundColor: '#202020', borderRadius: 4 ,elevation: 3}}>
+            <Image style={{width: 55,height: 55}} source={{ uri: 'https://i.gravater.cc/100'}}/>
+            <View style={styles.randomArtist}>
+              <Text  style={{color: 'white', fontSize: 13, fontWeight: 'bold'}}>Daveora</Text>
+            </View>
+          </View>
         </View>
       </ScrollView>
     </LinearGradient>
