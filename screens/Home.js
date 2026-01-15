@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from "axios";
 import { FlatList } from 'react-native/types_generated/index';
 import ArtistCard from '../components/ArtistCard';
+import RecentPlays from '../components/RecentPlays';
 
 
 
@@ -137,8 +138,11 @@ const Home = () => {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {topArtist.map((item, index) =>{
             <ArtistCard item={item} key={index}/>
-        })}
+          })}
         </ScrollView>
+        <View style={{height: 20}}/>
+          <Text style={{color: "white", fontSize: 19, fontWeight: 'bold', marginHorizontal: 10, marginTop: 10}}>Recently played</Text>
+          <FlatList horizontal showsHorizontalScrollIndicator={false} data={recentTrack} renderItem={({item, index}) => {<RecentPlays item={item} key={index}/>}}/>
       </ScrollView>
     </LinearGradient>
   )
