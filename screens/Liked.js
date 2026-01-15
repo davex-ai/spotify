@@ -1,16 +1,18 @@
-import { View, Text, ScrollView, Pressable, TextInput, FlatList } from 'react-native'
+import { View, Text, ScrollView, Pressable, TextInput, FlatList, Image } from 'react-native'
 import { Entypo, MaterialCommunityIcons, Ionicons, AntDesign } from '@expo/vector-icons'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import LikedList from '../components/LikedList'
+import { Player } from '../contexts/PlayContext'
 
 
 const Liked = () => {
   const navigation = useNavigation()
   const [search, setSearch] = useState('')
   const [likedsongs, setLikedSongs] = useState([])
+  const [currTrack, setCurrTrack] = useContext(Player)
 
   async function getLikedSongs( ) {
       const accessToken = await AsyncStorage.getItem('token')
@@ -33,7 +35,17 @@ const Liked = () => {
       getLikedSongs()
     },[])
 
-  return (
+    const playTrack = async () => {
+      if(likedsongs.length > 0){
+        setCurrTrack(likedsongs[0])
+      }
+      await play(likedsongs[0])
+    }
+    const play = async () => {
+
+    }
+
+  return (<>
     <LinearGradient colors={['#614385', '#516395']} style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1, marginTop: 40 }}>
         <Pressable>
@@ -59,7 +71,7 @@ const Liked = () => {
           </Pressable>
           <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
             <MaterialCommunityIcons name="cross-bolnisi" size={24} color="#1D8954" />
-            <Pressable style={{width: 60, height: 60, borderRadius: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1D8954'}}>
+            <Pressable onPress={playTrack} style={{width: 60, height: 60, borderRadius: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1D8954'}}>
               <Entypo name="controller-play" size={24} color="white"/>
             </Pressable>
           </View>
@@ -67,6 +79,24 @@ const Liked = () => {
         <FlatList data={likedsongs} renderItem={({item}) => {<LikedList item={item} />}} showsVeritcalScrollIndicator={false}/>
       </ScrollView>
     </LinearGradient>
+
+    {currTrack &&(
+      <Pressable style={{backgroundColor: '#5072A7', width: '90%', marginBottom: 15, position: 'absolute', borderRadius: 6, left: 20, bottom: 10, flexDirection: 'row', gap: 10, alignItems: 'center' ,justifyContent: 'space-between', marginHorizontal: 'auto', padding: 10}}>
+        <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+          <Image style={{width: 40, height: 40}} source={{uri: currTrack?.track?.album?.image[0].url}}/>
+          <Text numberOfLines={1} style={{ fontSize: 13, width: 220, color: 'white', fontWeight: 'bold'}}>{currTrack?.track?.name} ·{" "} {currTrack?.track?.artists[0].name}</Text>
+        </View>
+
+        <View style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
+          <AntDesign name="heart" size={24} color="1D8954" />
+          <Pressable>
+            <AntDesign name="pausecircle" size={24} color="white" />
+          </Pressable>
+
+        </View>
+      </Pressable>
+    )}
+    </>
   )
 }
 
