@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Pressable, TextInput, FlatList } from 'react-native'
-import { Entypo, Feather, MaterialCommunityIcons, Ionicons, AntDesign } from '@expo/vector-icons'
+import { Entypo, MaterialCommunityIcons, Ionicons, AntDesign } from '@expo/vector-icons'
 import React, { useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
