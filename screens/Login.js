@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 // import { LinearGradient } from 'expo-linear-gradient'
 import { Entypo } from '@expo/vector-icons'
@@ -10,6 +10,25 @@ import { useNavigation } from '@react-navigation/native'
 
 const Login = () => {
     const navigation = useNavigation()
+    useEffect(() => {
+        const tokenValidity = async ()  => {
+            const accessToken = await AsyncStorage.getItem('token')
+            const expDate = await AsyncStorage.getItem('expirationDate')
+            console.log("acess token", accessToken);
+            console.log("exp date", expDate);
+
+            if (accessToken && expDate) {
+                const currTime = Date.now()
+                if (currTime < parseInt(expDate)){
+                    navigation.replace('Main')
+                } else{
+                    AsyncStorage.removeItem('token')
+                    AsyncStorage.removeItem('expirationDate')
+                }
+            }              
+        }
+        tokenValidity()
+    },[])
     async function authenticate() {
         const config = {
             issue: "https://accounts.spotify.com",
