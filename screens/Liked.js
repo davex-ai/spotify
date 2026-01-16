@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Pressable, TextInput, FlatList, Image } from 'react-native'
 import { BottomModal, ModalContent } from 'react-native-modals'
 import { Entypo, MaterialCommunityIcons, Ionicons, Feather ,AntDesign } from '@expo/vector-icons'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Audio } from 'expo-av'
 import { useNavigation } from '@react-navigation/native'
@@ -19,7 +19,9 @@ const Liked = () => {
   const [currTime, setCurrTime] = useState(0)
   const [trackDuration, setTrackDuration] = useState(0)
   const [progress, setProgress] = useState(null)
+  const [isPlaying, setisPlaying] = useState(false)
   const [modal, setModal] = useState(false)
+  const value = useRef(0)
 
   async function getLikedSongs( ) {
       const accessToken = await AsyncStorage.getItem('token')
@@ -68,21 +70,66 @@ const Liked = () => {
         )
         onPlaybackStatusUpdate(status)
         setCurrSound(sound)
+        setisPlaying(status.isLoaded)
         await sound.playAsync
       } catch (err) {
         console.log(err.message);        
       }
     }
 
+    const formatTime = async (time) => {
+      const mins = Math.floor(time / 60000)
+      const secs = Math.floor((time / 60000) / 1000)
+      return `${mins}: ${secs < 10 ? "0" :"" }${secs}`
+    }
+    const handlePlay = async () => {
+      if(currSound){
+        if(isPlaying){
+          await currSound.pauseAsync()
+        } else{
+          await currSound.playAsync( )
+        }
+        setisPlaying(!isPlaying)
+      }
+    }
     const onPlaybackStatusUpdate = async (status) => {
       if (status.isLoaded && status.isPlaying) {
         const progress = status.positionMillis / status.durationMillis
         setProgress(progress)
-        setCurrTime(progress.positionMillis)
+        setCurrTime(status.positionMillis)
         setTrackDuration(status.durationMillis)
       }
     }
-
+    const playNextTrack = async ( ) => {
+      if(currSound){
+        await currSound.stopAsync()
+        setCurrSound(null)
+      }
+      value.current += 1
+      if(value.current < likedsongs.length){
+        const nextTrack =  savedTracks[value.current]
+        setCurrTrack(nextTrack)
+        await play(nextTrack)
+      }else{
+        console.log("end of list");
+        
+      }
+    }
+    const playPrevTrack = async ( ) => {
+      if(currSound){
+        await currSound.stopAsync()
+        setCurrSound(null)
+      }
+      value.current -= 1
+      if(value.current < likedsongs.length){
+        const nextTrack =  savedTracks[value.current]
+        setCurrTrack(nextTrack)
+        await play(nextTrack)
+      }else{
+        console.log("end of list");
+        
+      }
+    }
   return (<>
     <LinearGradient colors={['#614385', '#516395']} style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1, marginTop: 40 }}>
@@ -104,7 +151,7 @@ const Liked = () => {
           <Text style={{color: 'white', fontSize: 13, marginTop: 5}}>430 songs</Text>
         </View>
         <Pressable style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 10}}>
-          <Pressable style={{width: 30, height: 30, borderBlockColor: 15, backgroundColor: '#1D8954', justifyContent: 'center', alignItems: 'center'}}>
+          <Pressable style={{width: 30, height: 30, borderRadius: 15, backgroundColor: '#1D8954', justifyContent: 'center', alignItems: 'center'}}>
             <AntDesign name="arrowdown" size={20} color="white" />
           </Pressable>
           <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
@@ -154,24 +201,36 @@ const Liked = () => {
 
           </View>
 
-          <View style={{marginTop: 20}}>
-            <Text>Progress Bar</Text>
+          <View style={{marginTop: 10}}>
+            <View style={{
+              width: '100%', marginTop: 10, height: 3, backgroundColor: 'gray', borderRadius: 5 }}>
+            {/* <View style={{ height: '100%', backgroundColor: 'white',{ width: `${progress * 100}%`}}}/> */}
+            {/* <View style={{{position: 'absolute', top: -5, width: 12, height: 12, borderRadius: 6, backgroundColor: 'white'},{left: `${progress * 100}%`, marginLeft: 6 }}}/> */}
+            </View>
             <View style={{marginTop: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-              <Text style={{color: '#D3D3D3', fontSize: 15}}>0:00</Text>
-              <Text style={{color: '#D3D3D3', fontSize: 15}}>0:30</Text>
+              <Text style={{color: '#D3D3D3', fontSize: 15}}>{formatTime(currTime)}</Text>
+              <Text style={{color: '#D3D3D3', fontSize: 15}}>{formatTime(trackDuration)}</Text>
             </View>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 17}}>
             <Pressable>
               <FontAwesome name="arrows" size={30} color="#03C03C"/>
             </Pressable>
-            <Pressable>
+            <Pressable onPress={playPrevTrack}>
               <Ionicons name="play-skip-back" size={30} color="white"/>
             </Pressable>
-            <Pressable>
-              <AntDesign name="pausecircle" size={60} color="white"/>
+            <Pressable onPress={handlePlay}>
+              {isPlaying ? (
+                  <AntDesign name="pausecircle" size={60} color="white" />
+                ) : (
+                  <Pressable  onPress={handlePlay} style={{width: 60, height: 60, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
+                    <AntDesign name="controller-play" size={24} color="black" />
+
+                  </Pressable>
+              )
+              }
             </Pressable>
-            <Pressable>
+            <Pressable onPress={playNextTrack}>
               <Ionicons name="play-skip-forward" size={30} color="white"/>
             </Pressable>
             <Pressable>
