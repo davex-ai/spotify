@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Login from "./screens/Login";
 import Liked from "./screens/Liked";
+import SongInfo from "./screens/SongInfo";
 const Tab = createBottomTabNavigator()
 
 function BottomTabs() {
@@ -27,6 +28,7 @@ function Navigation() {
                 <Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
                 <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
                 <Stack.Screen name="Liked" component={Liked} options={{ headerShown: false }} />
+                <Stack.Screen name="Info" component={SongInfo} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )
