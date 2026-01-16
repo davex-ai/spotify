@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, ScrollView, FlatList, Image, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { LinearGradient } from 'expo-linear-gradient'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient' 
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from "axios";
