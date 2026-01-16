@@ -53,6 +53,9 @@ const Liked = () => {
     const play = async (nextTrack) => {
       const preview_url = nextTrack?.track?.preview_url
       try {
+        if (currSound) {
+          await currSound.stopAsync          
+        }
         await Audio.setAudioModeAsync({
           playsInSilentModeIOS: true,
           staysActiveInBackground: false,
@@ -98,6 +101,10 @@ const Liked = () => {
         setProgress(progress)
         setCurrTime(status.positionMillis)
         setTrackDuration(status.durationMillis)
+      }
+      if(status.didJustFinish === true){
+        setCurrSound(null)
+        playNextTrack()
       }
     }
     const playNextTrack = async ( ) => {
@@ -161,7 +168,7 @@ const Liked = () => {
             </Pressable>
           </View>
         </Pressable>
-        <FlatList data={likedsongs} renderItem={({item}) => {<LikedList item={item} />}} showsVeritcalScrollIndicator={false}/>
+        <FlatList data={likedsongs} renderItem={({item}) => {<LikedList item={item} onPress={play} isPlaying={item === currTrack} />}} showsVeritcalScrollIndicator={false}/>
       </ScrollView>
     </LinearGradient>
 

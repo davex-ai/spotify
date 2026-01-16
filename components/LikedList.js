@@ -1,15 +1,21 @@
 import { View, Text, Pressable, Image } from 'react-native'
-import React from 'react'
-import { Entypo, MaterialCommunityIcons, Ionicons, AntDesign } from '@expo/vector-icons'
+import React, { useContext } from 'react'
+import { Entypo, AntDesign } from '@expo/vector-icons'
+import { Player } from '../contexts/PlayContext'
 
 
-const LikedList = ({ item }) => {
+const LikedList = ({ item, onPress, isPlaying }) => {
+    const [currTrack, setCurrTrack] = useContext(Player)
+    const handlePress = () => {
+        setCurrTrack(item)
+        onPress(item)
+    }
     return (
-        <Pressable style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }} >
+        <Pressable onPress={handlePress} style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }} >
             <Image style={{ width: 50, height: 50, marginRight: 10 }} source={{ uri: item?.track?.album.images[0].url }} />
 
             <View style={{ flex: 1 }} >
-                <Text numberOfLines={1} style={{ fontWeight: 'bold', fontSize: 14, color: 'white' }}>{item?.track?.name}</Text>
+                <Text numberOfLines={1} style={ isPlaying ? { fontWeight: 'bold', fontSize: 14, color: '#3FFF08' }: {fontWeight: 'bold', fontSize: 14, color: 'white'}}>{item?.track?.name}</Text>
                 <Text style={{ marginTop: 4, color: '#989898' }}>{item?.track?.artists[0].name}</Text>
             </View>
 
