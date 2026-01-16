@@ -16,6 +16,9 @@ const Liked = () => {
   const [likedsongs, setLikedSongs] = useState([])
   const [currTrack, setCurrTrack] = useContext(Player)
   const [currSound, setCurrSound] = useState(null)
+  const [currTime, setCurrTime] = useState(0)
+  const [trackDuration, setTrackDuration] = useState(0)
+  const [progress, setProgress] = useState(null)
   const [modal, setModal] = useState(false)
 
   async function getLikedSongs( ) {
@@ -57,14 +60,27 @@ const Liked = () => {
           {
             uri: preview_url
           },
-          {shouldPlay: true, isLooping: false}
+          {
+            shouldPlay: true, 
+            isLooping: false
+          },
+          onPlaybackStatusUpdate
         )
+        onPlaybackStatusUpdate(status)
         setCurrSound(sound)
         await sound.playAsync
       } catch (err) {
         console.log(err.message);        
       }
+    }
 
+    const onPlaybackStatusUpdate = async (status) => {
+      if (status.isLoaded && status.isPlaying) {
+        const progress = status.positionMillis / status.durationMillis
+        setProgress(progress)
+        setCurrTime(progress.positionMillis)
+        setTrackDuration(status.durationMillis)
+      }
     }
 
   return (<>
