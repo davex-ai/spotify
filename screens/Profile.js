@@ -65,10 +65,14 @@ const Profile = () => {
           </View>
         </View>
         <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginHorizontal: 12}}>Your Playlists</Text>
-        <View>
+        <View style={{padding: 15}}>
           {playlist.map((item, index) => {
-            <View>
+            <View style={{flexDirection: 'row', alignContent: 'center', gap: 8, marginVertical: 10}}>
               <Image source={{ uri: item?.images[0]?.url || '../assets/icon.png'}} style={{width: 50, height: 50, borderBottomLeftRadius: 4}}/>
+              <View>
+                <Text style={{color: 'white'}}>{item?.name}</Text>
+                <Text style={{color: 'white', marginTop: 7}}>0 followers</Text>
+              </View>
               </View>
           })}
         </View>
