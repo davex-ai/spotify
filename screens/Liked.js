@@ -3,6 +3,7 @@ import { BottomModal, ModalContent } from 'react-native-modals'
 import { Entypo, MaterialCommunityIcons, Ionicons, Feather ,AntDesign } from '@expo/vector-icons'
 import React, { useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
+import { Audio } from 'expo-av'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import LikedList from '../components/LikedList'
@@ -14,6 +15,7 @@ const Liked = () => {
   const [search, setSearch] = useState('')
   const [likedsongs, setLikedSongs] = useState([])
   const [currTrack, setCurrTrack] = useContext(Player)
+  const [currSound, setCurrSound] = useState(null)
   const [modal, setModal] = useState(false)
 
   async function getLikedSongs( ) {
@@ -43,7 +45,25 @@ const Liked = () => {
       }
       await play(likedsongs[0])
     }
-    const play = async () => {
+    const play = async (nextTrack) => {
+      const preview_url = nextTrack?.track?.preview_url
+      try {
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+          staysActiveInBackground: false,
+          shouldDuckAndroid: false
+        })
+        const {sound, status} = await Audio.Sound.createAsync(
+          {
+            uri: preview_url
+          },
+          {shouldPlay: true, isLooping: false}
+        )
+        setCurrSound(sound)
+        await sound.playAsync
+      } catch (err) {
+        console.log(err.message);        
+      }
 
     }
 
