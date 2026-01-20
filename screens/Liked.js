@@ -4,10 +4,12 @@ import { Entypo, MaterialCommunityIcons, Ionicons, Feather ,AntDesign } from '@e
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Audio } from 'expo-av'
+import { debounce } from 'lodash'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import LikedList from '../components/LikedList'
 import { Player } from '../contexts/PlayContext'
+import { ActivityIndicator } from 'react-native/types_generated/index'
 
 
 const Liked = () => {
@@ -19,6 +21,7 @@ const Liked = () => {
   const [currTime, setCurrTime] = useState(0)
   const [trackDuration, setTrackDuration] = useState(0)
   const [progress, setProgress] = useState(null)
+  const [searchTrack, setSearchTrack] = useState([])
   const [isPlaying, setisPlaying] = useState(false)
   const [modal, setModal] = useState(false)
   const value = useRef(0)
@@ -50,6 +53,7 @@ const Liked = () => {
       }
       await play(likedsongs[0])
     }
+
     const play = async (nextTrack) => {
       const preview_url = nextTrack?.track?.preview_url
       try {
@@ -85,6 +89,7 @@ const Liked = () => {
       const secs = Math.floor((time / 60000) / 1000)
       return `${mins}: ${secs < 10 ? "0" :"" }${secs}`
     }
+
     const handlePlay = async () => {
       if(currSound){
         if(isPlaying){
@@ -95,6 +100,7 @@ const Liked = () => {
         setisPlaying(!isPlaying)
       }
     }
+
     const onPlaybackStatusUpdate = async (status) => {
       if (status.isLoaded && status.isPlaying) {
         const progress = status.positionMillis / status.durationMillis
@@ -107,6 +113,22 @@ const Liked = () => {
         playNextTrack()
       }
     }
+
+    const debouncedSearch = debounce(handleSearch, 800)
+    function handleSearch(text){
+      const filterTrack = likedsongs.filter((item) => item.track.name.toLowerCase().includes(text.toLowerCase()))
+
+      setSearchTrack(filterTrack)      
+    }
+
+    useEffect(() => {
+if(likedsongs.length > 0) handleSearch(input)
+    },[likedsongs])
+    const handleInput = async (text) => {
+      setSearch(text)
+      debouncedSearch(text)
+    }
+
     const playNextTrack = async ( ) => {
       if(currSound){
         await currSound.stopAsync()
@@ -114,7 +136,7 @@ const Liked = () => {
       }
       value.current += 1
       if(value.current < likedsongs.length){
-        const nextTrack =  savedTracks[value.current]
+        const nextTrack =  likedsongs[value.current]
         setCurrTrack(nextTrack)
         await play(nextTrack)
       }else{
@@ -129,7 +151,7 @@ const Liked = () => {
       }
       value.current -= 1
       if(value.current < likedsongs.length){
-        const nextTrack =  savedTracks[value.current]
+        const nextTrack =  likedsongs[value.current]
         setCurrTrack(nextTrack)
         await play(nextTrack)
       }else{
@@ -146,7 +168,7 @@ const Liked = () => {
         <Pressable style={{ marginTop: 9, marginHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#42275a', padding: 9, flex: 1, borderRadius: 3, height: 30 }}>
             <AntDesign name="search1" size={20} color="white" />
-            <TextInput style={{fontWeight: 500}} value={search} onChangeText={(text) => setSearch(search)} placeholder="Search Liked Songs" placeholderTextColor={'white'} />
+            <TextInput style={{fontWeight: 500, color: 'white'}} value={search} onChangeText={(text) => handleInput(text)} placeholder="Search Liked Songs" placeholderTextColor={'white'} />
           </Pressable>
           <Pressable style={{ marginHorizontal: 10, backgroundColor: '#42275a', padding: 10, borderRadius: 3, height: 38 }}>
             <Text style={{color: 'white'}}> Sort</Text>
@@ -168,7 +190,11 @@ const Liked = () => {
             </Pressable>
           </View>
         </Pressable>
-        <FlatList data={likedsongs} renderItem={({item}) => {<LikedList item={item} onPress={play} isPlaying={item === currTrack} />}} showsVeritcalScrollIndicator={false}/>
+        {searchTrack.length === 0 ? (
+          <ActivityIndicator size="large" color={"gray"} />
+        ) : (
+          <FlatList data={searchTrack} renderItem={({item}) => {<LikedList item={item} onPress={play} isPlaying={item === currTrack} />}} showsVeritcalScrollIndicator={false}/>
+        )}
       </ScrollView>
     </LinearGradient>
 
@@ -198,7 +224,7 @@ const Liked = () => {
           </Pressable>
           <View style={{height: 70}}/>
           <View>
-          <Image style={{ width: '100%', height: 330, borderRadius:5}}source={{uri: currTrack?.text?.album?.images[0].url}}/>
+          <Image style={{ width: '100%', height: 330, borderRadius:5}}source={{uri: currTrack?.track?.album?.images[0].url}}/>
           <View style={{marginTop: 20, flexDirection: 'row', justifyContent: 'space-between'}}>
             <View style={{ }}>
               <Text style={{fontSize: 18, fontWeight: 'bold', color: 'white'}}>{currTrack?.track?.name}</Text>
