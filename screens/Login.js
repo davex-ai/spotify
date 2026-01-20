@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons'
-import * as AppAuth from 'expo-app-auth'
+import * as AppAuth from 'expo-auth-session'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
