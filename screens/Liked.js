@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable, TextInput, FlatList, Image } from 'react-native'
+import { View, Text, ScrollView, Pressable, TextInput, FlatList, Image, ActivityIndicator } from 'react-native'
 import { BottomModal, ModalContent } from 'react-native-modals'
 import { Entypo, MaterialCommunityIcons, Ionicons, Feather ,AntDesign } from '@expo/vector-icons'
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -9,7 +9,6 @@ import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import LikedList from '../components/LikedList'
 import { Player } from '../contexts/PlayContext'
-import { ActivityIndicator } from 'react-native/types_generated/index'
 
 
 const Liked = () => {
